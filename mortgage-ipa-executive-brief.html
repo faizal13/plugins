@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mortgage IPA &mdash; Executive Brief | RAKBANK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- Mermaid removed -->
+    <style>
+        :root {
+            --rak-red: #E01E00;
+            --rak-dark: #AA1200;
+            --rak-deep: #7A0D00;
+            --white: #FFFFFF;
+            --bg: #F7F7F8;
+            --bg-alt: #F0F2F6;
+            --card-bg: #FFFFFF;
+            --text-primary: #1A1A1A;
+            --text-secondary: #6B6B78;
+            --text-muted: #9B9BA8;
+            --border: #E8E8EC;
+            --green: #0A8A3D;
+            --green-bg: #E6F5EC;
+            --blue: #0066CC;
+            --blue-bg: #E6F0FA;
+            --amber: #B45309;
+            --amber-bg: #FEF3C7;
+            --purple: #7C3AED;
+            --purple-bg: #F3E8FF;
+            --navy: #1E2761;
+            --navy-mid: #1A3A8F;
+            --sky: #4FC3F7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg); color: var(--text-primary);
+            line-height: 1.6; -webkit-font-smoothing: antialiased;
+        }
+
+        /* Navigation dots */
+        .nav-dots {
+            position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+            z-index: 100; display: flex; flex-direction: column; gap: 12px;
+        }
+        .nav-dot {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: rgba(0,0,0,0.15); border: none; cursor: pointer;
+            transition: all 0.3s; position: relative;
+        }
+        .nav-dot:hover, .nav-dot.active { background: var(--rak-red); transform: scale(1.3); }
+        .nav-dot .nav-tooltip {
+            position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+            background: var(--text-primary); color: white; padding: 4px 10px;
+            border-radius: 6px; font-size: 11px; font-weight: 600;
+            white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .nav-dot:hover .nav-tooltip { opacity: 1; }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--rak-dark) 0%, var(--rak-red) 40%, #F04A2F 100%);
+            color: white; padding: 56px 40px 72px; position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -150px; right: -150px;
+            width: 500px; height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; z-index: 1; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 6px 16px; border-radius: 100px;
+            font-size: 12px; font-weight: 600; letter-spacing: 0.8px;
+            text-transform: uppercase; margin-bottom: 20px;
+        }
+        .hero-badge .dot {
+            width: 8px; height: 8px; background: #4ADE80;
+            border-radius: 50%; animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+        .hero h1 { font-size: 44px; font-weight: 800; letter-spacing: -1.5px; line-height: 1.15; margin-bottom: 14px; }
+        .hero h1 span { display: block; font-weight: 300; font-size: 28px; letter-spacing: -0.5px; opacity: 0.9; margin-top: 4px; }
+        .hero-subtitle { font-size: 17px; opacity: 0.88; max-width: 700px; font-weight: 400; line-height: 1.7; }
+        .hero-meta { display: flex; gap: 32px; margin-top: 28px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.15); }
+        .hero-meta-item { font-size: 13px; opacity: 0.75; }
+        .hero-meta-item strong { display: block; font-size: 15px; font-weight: 600; opacity: 1; }
+
+        /* Container */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+        /* Section common */
+        .section-num {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px; border-radius: 50%;
+            background: var(--rak-red); color: white;
+            font-size: 14px; font-weight: 800; margin-bottom: 12px;
+        }
+        .section-header { text-align: center; margin-bottom: 40px; }
+        .section-header .overline {
+            font-size: 11px; font-weight: 700; letter-spacing: 2px;
+            text-transform: uppercase; color: var(--rak-red); margin-bottom: 10px;
+        }
+        .section-header h2 { font-size: 32px; font-weight: 800; letter-spacing: -1px; margin-bottom: 8px; }
+        .section-header p { color: var(--text-secondary); font-size: 15px; max-width: 600px; margin: 0 auto; }
+
+        /* Problem Cards */
+        .problem-section { margin-top: -36px; position: relative; z-index: 2; padding-bottom: 0; }
+        .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .problem-card {
+            background: var(--card-bg); border-radius: 16px; padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+            border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .problem-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 16px 40px rgba(0,0,0,0.06); }
+        .problem-card .icon-wrap {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; margin-bottom: 16px;
+        }
+        .problem-card.customer .icon-wrap { background: var(--blue-bg); }
+        .problem-card.bank .icon-wrap { background: var(--green-bg); }
+        .problem-card .card-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+        .problem-card.customer .card-label { color: var(--blue); }
+        .problem-card.bank .card-label { color: var(--green); }
+        .problem-card p { color: var(--text-secondary); font-size: 14px; line-height: 1.7; }
+
+        /* Solution Section */
+        .solution-section { padding: 64px 0 56px; }
+        .solution-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .sol-card {
+            background: var(--card-bg); border-radius: 14px; padding: 28px;
+            border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            display: flex; gap: 16px; align-items: flex-start; transition: transform 0.2s;
+        }
+        .sol-card:hover { transform: translateY(-2px); }
+        .sol-card .sol-icon {
+            width: 44px; height: 44px; border-radius: 11px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .sol-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.2px; }
+        .sol-card p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+        /* Journey Section */
+        .journey-section { padding: 0 0 56px; }
+        .journey-flow {
+            background: var(--card-bg); border-radius: 16px; padding: 28px 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+            border: 1px solid var(--border); margin-bottom: 20px;
+        }
+        .journey-flow h4 { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+        .journey-flow .flow-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 16px; }
+        .flow-steps { display: flex; align-items: center; flex-wrap: wrap; row-gap: 12px; gap: 0; }
+        .flow-step { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 72px; text-align: center; }
+        .flow-step .step-icon {
+            width: 36px; height: 36px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 14px; font-weight: 700; color: #fff;
+        }
+        .flow-step .step-label { font-size: 10px; color: var(--text-secondary); line-height: 1.3; max-width: 72px; }
+        .flow-arrow { color: var(--text-muted); font-size: 14px; margin: 0 1px; padding-bottom: 16px; }
+        .flow-agent .step-icon { background: var(--blue); }
+        .flow-customer .step-icon { background: var(--rak-red); }
+
+        /* Project Plan Pipeline */
+        .plan-section { padding: 64px 0 60px; background: var(--bg-alt); }
+        .pipeline-track {
+            background: var(--card-bg); border-radius: 16px; padding: 36px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+            border: 1px solid var(--border); margin-bottom: 32px;
+        }
+        .pipeline-steps { display: flex; gap: 0; position: relative; }
+        .pipeline-step { flex: 1; text-align: center; position: relative; padding: 0 8px; }
+        .pipeline-step::after {
+            content: ''; position: absolute; top: 22px; right: -1px;
+            width: calc(100%); height: 3px; background: var(--border); z-index: 0;
+        }
+        .pipeline-step:last-child::after { display: none; }
+        .pipe-icon {
+            width: 44px; height: 44px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; margin: 0 auto 10px; position: relative; z-index: 1;
+            border: 3px solid var(--card-bg);
+        }
+        .pipe-icon.ai { background: linear-gradient(135deg, var(--rak-dark), var(--rak-red)); color: white; }
+        .pipe-icon.human { background: var(--amber-bg); border-color: var(--amber); }
+        .pipe-label { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+        .pipe-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+        .pipe-badge { display: inline-block; margin-top: 6px; padding: 2px 8px; border-radius: 100px; font-size: 10px; font-weight: 700; }
+        .pipe-badge.ai-badge { background: #FEE2E2; color: var(--rak-dark); }
+        .pipe-badge.human-badge { background: var(--amber-bg); color: var(--amber); }
+
+        /* Figma Journey - NEW */
+        .figma-section { padding: 0 0 48px; }
+        .figma-card {
+            background: var(--card-bg); border-radius: 16px; padding: 32px 36px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+            border: 1px solid var(--border);
+        }
+        .figma-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text-primary); }
+        .figma-card .figma-subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6; }
+        .figma-flow {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 0;
+            position: relative;
+        }
+        .figma-step {
+            text-align: center; position: relative; padding: 0 6px;
+        }
+        .figma-step::after {
+            content: ''; position: absolute; top: 24px; right: -2px;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--rak-red) 0%, var(--purple) 100%);
+            opacity: 0.3; z-index: 0;
+        }
+        .figma-step:last-child::after { display: none; }
+        .figma-step-icon {
+            width: 48px; height: 48px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; margin: 0 auto 10px; position: relative; z-index: 1;
+        }
+        .figma-step-title { font-size: 12px; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; }
+        .figma-step-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+        .figma-step .fs-badge {
+            display: inline-block; margin-top: 6px; padding: 2px 8px;
+            border-radius: 100px; font-size: 9px; font-weight: 700;
+        }
+
+        /* Stats grid */
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .stat-item { text-align: center; padding: 24px 16px; background: white; border-radius: 14px; border: 1px solid var(--border); }
+        .stat-item .stat-number { font-size: 36px; font-weight: 800; letter-spacing: -1.5px; color: var(--rak-red); line-height: 1; }
+        .stat-item .stat-label { font-size: 12px; color: var(--text-secondary); margin-top: 6px; font-weight: 500; }
+
+        /* Agentic SDLC Section */
+        .agentic-section { padding: 64px 0 60px; }
+        .agents-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 32px; }
+        .agent-card {
+            background: var(--card-bg); border-radius: 14px; padding: 24px;
+            border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .agent-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+        .agent-card.human-gate { border-color: var(--amber); background: linear-gradient(135deg, #FFFDF5 0%, #FEF9E7 100%); }
+        .agent-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .agent-num {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+            border-radius: 9px; display: flex; align-items: center; justify-content: center;
+            font-size: 12px; font-weight: 700; color: var(--sky); flex-shrink: 0;
+        }
+        .agent-card.human-gate .agent-num { background: linear-gradient(135deg, #D35400 0%, #E8A838 100%); color: white; }
+        .agent-name { font-size: 14px; font-weight: 700; color: var(--navy); line-height: 1.2; }
+        .agent-trigger { font-size: 10px; font-weight: 500; color: var(--blue); margin-top: 2px; }
+        .agent-card.human-gate .agent-trigger { color: var(--amber); }
+        .agent-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
+        .agent-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+        .tag { background: var(--blue-bg); color: var(--blue); border-radius: 5px; padding: 2px 8px; font-size: 10px; font-weight: 600; }
+        .agent-card.human-gate .tag { background: var(--amber-bg); color: var(--amber); }
+
+        /* Time table */
+        .time-table-wrap {
+            background: var(--card-bg); border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+            border: 1px solid var(--border); overflow: hidden; margin-bottom: 32px;
+        }
+        .time-table-wrap h4 {
+            font-size: 15px; font-weight: 700; color: var(--navy);
+            padding: 24px 28px 0; margin-bottom: 4px;
+        }
+        .time-table-wrap .table-subtitle {
+            font-size: 12px; color: var(--text-muted); padding: 0 28px 16px;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        thead tr { background: var(--navy); }
+        thead th {
+            padding: 12px 20px; text-align: left;
+            font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+            text-transform: uppercase; color: #CADCFC;
+        }
+        tbody tr { border-bottom: 1px solid #EEF2FA; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #F7F9FE; }
+        tbody td { padding: 11px 20px; font-size: 12.5px; color: var(--text-primary); }
+        tbody td:nth-child(3) { font-weight: 600; color: var(--blue); }
+        .row-human { background: #FFFDF5 !important; }
+        .row-human td:first-child { font-weight: 600; color: var(--amber); }
+        .row-human td:nth-child(3) { color: var(--amber); }
+        .row-total { background: linear-gradient(90deg, #E6F5EC 0%, #F3FAF5 100%) !important; }
+        .row-total td { font-weight: 700; font-size: 13px; color: var(--green) !important; }
+        .role-badge {
+            display: inline-block; padding: 2px 8px; border-radius: 5px;
+            font-size: 10px; font-weight: 600;
+        }
+        .role-badge.biz { background: var(--purple-bg); color: var(--purple); }
+        .role-badge.arch { background: var(--blue-bg); color: var(--blue); }
+        .role-badge.dev { background: var(--amber-bg); color: var(--amber); }
+        .role-badge.ai { background: #FEE2E2; color: var(--rak-dark); }
+        .role-badge.existing { background: var(--bg-alt); color: var(--text-muted); }
+
+        /* Learning story progression */
+        .learning-story {
+            background: var(--card-bg); border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+            border: 1px solid var(--border); padding: 28px 32px; margin-bottom: 32px;
+        }
+        .learning-story h4 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 6px; }
+        .learning-story .story-subtitle { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+        .story-steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        .story-step {
+            border-radius: 12px; padding: 18px 16px; text-align: center;
+            border: 1px solid var(--border);
+        }
+        .story-step .story-range { font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
+        .story-step .story-conf { font-size: 20px; font-weight: 800; color: var(--rak-red); margin-bottom: 4px; }
+        .story-step .story-desc { font-size: 11px; color: var(--text-secondary); line-height: 1.4; }
+
+        /* Learning curve */
+        .learning-track {
+            background: var(--card-bg); border-radius: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+            border: 1px solid var(--border); padding: 28px 32px;
+        }
+        .learning-track h4 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--navy); }
+        .sprint-row { display: flex; align-items: center; margin-bottom: 14px; gap: 14px; }
+        .sprint-row:last-child { margin-bottom: 0; }
+        .sprint-label { min-width: 68px; font-size: 11px; font-weight: 600; color: var(--text-muted); }
+        .sprint-bar-wrap { flex: 1; }
+        .sprint-bar {
+            height: 24px; border-radius: 6px;
+            background: linear-gradient(90deg, var(--navy) 0%, var(--navy-mid) 50%, #1565C0 100%);
+            display: flex; align-items: center; padding: 0 12px;
+            font-size: 11px; font-weight: 700; color: var(--sky);
+            transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 28px 40px; text-align: center;
+            color: var(--text-muted); font-size: 13px;
+            border-top: 1px solid var(--border); background: white;
+        }
+        .footer strong { color: var(--text-secondary); }
+
+        /* Animations */
+        .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-dots { display: none; }
+            .hero { padding: 36px 20px 56px; }
+            .hero h1 { font-size: 30px; }
+            .hero h1 span { font-size: 20px; }
+            .container { padding: 0 20px; }
+            .problem-grid, .solution-grid, .agents-grid, .stats-grid { grid-template-columns: 1fr; }
+            .pipeline-steps { flex-direction: column; gap: 16px; }
+            .pipeline-step::after { display: none; }
+            .figma-flow { grid-template-columns: 1fr 1fr; gap: 16px; }
+            .figma-step::after { display: none; }
+            .hero-meta { flex-direction: column; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV DOTS -->
+<nav class="nav-dots">
+    <button class="nav-dot active" onclick="scrollToSec('#hero')"><span class="nav-tooltip">Overview</span></button>
+    <button class="nav-dot" onclick="scrollToSec('#problem')"><span class="nav-tooltip">Problem</span></button>
+    <button class="nav-dot" onclick="scrollToSec('#solution')"><span class="nav-tooltip">Solution</span></button>
+    <button class="nav-dot" onclick="scrollToSec('#plan')"><span class="nav-tooltip">Project Plan</span></button>
+    <button class="nav-dot" onclick="scrollToSec('#sdlc')"><span class="nav-tooltip">Autonomous SDLC</span></button>
+</nav>
+
+<!-- ====================================================== -->
+<!--  1. HERO — INTRO TO MORTGAGE IPA                        -->
+<!-- ====================================================== -->
+<section class="hero" id="hero">
+    <div class="hero-inner">
+        <div class="hero-badge"><span class="dot"></span> Executive Brief &nbsp;&middot;&nbsp; Architecture &amp; Engineering</div>
+        <h1>
+            Mortgage IPA
+            <span>Digitalising In-Principle Approval for Mortgage Lending</span>
+        </h1>
+        <p class="hero-subtitle">
+            A fully digital, AI-powered mortgage pre-approval platform that replaces today&rsquo;s manual, email-driven IPA process &mdash; enabling customers to get an In-Principle Approval in minutes, while freeing bank teams to focus on converting IPAs into mortgages.
+        </p>
+        <div style="margin-top:24px; display:inline-flex; align-items:center; gap:10px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:10px; padding:12px 20px;">
+            <span style="font-size:20px;">&#x1F91D;</span>
+            <span style="font-size:15px; font-weight:600; letter-spacing:-0.3px;"><em>&ldquo;Digital with a Human Touch&rdquo;</em></span>
+        </div>
+        <div class="hero-meta">
+            <div class="hero-meta-item"><strong>Retail Banking</strong>Business Unit</div>
+            <div class="hero-meta-item"><strong>Web + Mobile</strong>Platforms</div>
+            <div class="hero-meta-item"><strong>AI-Powered</strong>Design, Dev &amp; Delivery</div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================== -->
+<!--  2. THE PROBLEM                                          -->
+<!-- ====================================================== -->
+<section class="problem-section" id="problem">
+    <div class="container">
+        <div class="section-header" style="margin-bottom:28px;">
+            <div class="section-num">1</div>
+            <div class="overline">The Problem</div>
+            <h2>Why We Need This</h2>
+        </div>
+        <div class="problem-grid">
+            <div class="problem-card customer fade-in">
+                <div class="icon-wrap">&#x1F464;</div>
+                <div class="card-label">For the Customer</div>
+                <p>Customers face a fully manual, email-driven IPA process with no document validations, constant back-and-forth with sales, and zero real-time visibility &mdash; making mortgage pre-approval slow and frustrating.</p>
+            </div>
+            <div class="problem-card bank fade-in">
+                <div class="icon-wrap">&#x1F3E6;</div>
+                <div class="card-label">For the Bank</div>
+                <p>Only 30% of IPAs convert to mortgages, yet each takes 45&ndash;60 min across Sales and Underwriting with manual AECB checks and no validations &mdash; effort that should go toward final conversions and Central Bank compliance.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================== -->
+<!--  3. OUR SOLUTION                                         -->
+<!-- ====================================================== -->
+<section class="solution-section" id="solution">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-num">2</div>
+            <div class="overline">Our Solution</div>
+            <h2>How Mortgage IPA Solves This</h2>
+            <p>A guided digital journey that replaces every manual step with automated, validated workflows.</p>
+        </div>
+        <div class="solution-grid" style="margin-bottom:40px;">
+            <div class="sol-card fade-in">
+                <div class="sol-icon" style="background:var(--blue-bg);">&#x1F50D;</div>
+                <div><h4>Real-Time AECB Integration</h4><p>Instant credit bureau check with customer consent &mdash; no manual keying into the AECB calculator.</p></div>
+            </div>
+            <div class="sol-card fade-in">
+                <div class="sol-icon" style="background:var(--green-bg);">&#x2705;</div>
+                <div><h4>Built-In Document Validations</h4><p>File type, size, and completeness checks at upload &mdash; eliminates back-and-forth between Sales &amp; Credit.</p></div>
+            </div>
+            <div class="sol-card fade-in">
+                <div class="sol-icon" style="background:#FEE2E2;">&#x26A1;</div>
+                <div><h4>Automated Eligibility Engine</h4><p>Instant IPA decision based on income, liabilities, and AECB data &mdash; from days to minutes.</p></div>
+            </div>
+            <div class="sol-card fade-in">
+                <div class="sol-icon" style="background:var(--purple-bg);">&#x1F4F1;</div>
+                <div><h4>Customer Self-Service (Web + Mobile)</h4><p>Customers complete the entire IPA journey on their phone &mdash; no branch visits, no RM dependency.</p></div>
+            </div>
+            <div class="sol-card fade-in">
+                <div class="sol-icon" style="background:var(--amber-bg);">&#x1F6E1;</div>
+                <div><h4>Central Bank Compliance</h4><p>KFS, consent management, and CBUAE mortgage lending regulations built into every step.</p></div>
+            </div>
+            <div class="sol-card fade-in">
+                <div class="sol-icon" style="background:var(--blue-bg);">&#x1F465;</div>
+                <div><h4>Channel Partner Portal</h4><p>Brokers, Direct Sales, and Elite Sales send invites via a dashboard &mdash; customer gets an SMS to start.</p></div>
+            </div>
+        </div>
+
+        <!-- Journey flows removed -->
+    </div>
+</section>
+
+<!-- ====================================================== -->
+<!--  4. PROJECT PLAN — AI IN EVERY PHASE                     -->
+<!-- ====================================================== -->
+<section class="plan-section" id="plan">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-num">3</div>
+            <div class="overline">Project Plan</div>
+            <h2>AI in Every Phase</h2>
+            <p>From BRD to production &mdash; AI accelerates every step of our delivery, starting from design.</p>
+        </div>
+
+        <!-- Unified Delivery Journey: BRD → Figma → Code → Production -->
+        <div class="figma-card fade-in" style="margin-bottom:32px;">
+            <h4>&#x1F3A8; From BRD to Production &mdash; One AI-Powered Pipeline</h4>
+            <p class="figma-subtitle">
+                We didn&rsquo;t start with code &mdash; we started by understanding the application journey.
+                AI analysed the BRD, mapped every persona and user path, and generated 47 Figma screens
+                reflecting the real mortgage IPA experience. From there, AI drives every phase through to production.
+            </p>
+            <div class="figma-flow" style="grid-template-columns:repeat(4,1fr); margin-bottom:24px;">
+                <div class="figma-step">
+                    <div class="figma-step-icon" style="background:var(--blue-bg);">&#x1F4C4;</div>
+                    <div class="figma-step-title">BRD Analysis</div>
+                    <div class="figma-step-desc">AI extracts business rules, personas, regulatory requirements from BRD</div>
+                    <div class="fs-badge" style="background:#FEE2E2;color:var(--rak-dark);">AI-Assisted</div>
+                </div>
+                <div class="figma-step">
+                    <div class="figma-step-icon" style="background:var(--purple-bg);">&#x1F5FA;</div>
+                    <div class="figma-step-title">Journey Mapping</div>
+                    <div class="figma-step-desc">Map every user path &mdash; self-service, broker, RM &mdash; across all personas</div>
+                    <div class="fs-badge" style="background:#FEE2E2;color:var(--rak-dark);">AI-Assisted</div>
+                </div>
+                <div class="figma-step">
+                    <div class="figma-step-icon" style="background:var(--green-bg);">&#x1F3A8;</div>
+                    <div class="figma-step-title">47 Figma Screens</div>
+                    <div class="figma-step-desc">Generated via Copilot + Figma MCP, reviewed &amp; remediated by the team</div>
+                    <div class="fs-badge" style="background:#FEE2E2;color:var(--rak-dark);">AI-Generated</div>
+                </div>
+                <div class="figma-step" style="position:relative;">
+                    <div class="figma-step-icon" style="background:var(--amber-bg);">&#x1F9D1;</div>
+                    <div class="figma-step-title">Design Review</div>
+                    <div class="figma-step-desc">Human review for UX quality, compliance, and brand alignment</div>
+                    <div class="fs-badge" style="background:var(--amber-bg);color:var(--amber);">Human Gate</div>
+                </div>
+            </div>
+            <div style="text-align:center; color:var(--text-muted); font-size:18px; margin:8px 0 20px;">&#x25BC;</div>
+            <div class="pipeline-steps" style="display:flex; gap:0; position:relative;">
+                <div class="pipeline-step" style="flex:1; text-align:center; position:relative; padding:0 8px;">
+                    <div class="pipe-icon ai" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;position:relative;z-index:1;border:3px solid var(--card-bg);background:linear-gradient(135deg,var(--rak-dark),var(--rak-red));color:white;">&#x1F4CB;</div>
+                    <div class="pipe-label">User Stories</div>
+                    <div class="pipe-desc">AI extracts acceptance criteria &amp; test cases from Figma designs</div>
+                    <div class="pipe-badge ai-badge">AI-Assisted</div>
+                </div>
+                <div class="pipeline-step" style="flex:1; text-align:center; position:relative; padding:0 8px;">
+                    <div class="pipe-icon ai" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;position:relative;z-index:1;border:3px solid var(--card-bg);background:linear-gradient(135deg,var(--rak-dark),var(--rak-red));color:white;">&#x1F4BB;</div>
+                    <div class="pipe-label">Development</div>
+                    <div class="pipe-desc">Copilot Agents generate full stack: entity, service, API, tests</div>
+                    <div class="pipe-badge ai-badge">AI-Generated</div>
+                </div>
+                <div class="pipeline-step" style="flex:1; text-align:center; position:relative; padding:0 8px;">
+                    <div class="pipe-icon human" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;position:relative;z-index:1;border:3px solid var(--amber);background:var(--amber-bg);">&#x1F9D1;</div>
+                    <div class="pipe-label">Code Review</div>
+                    <div class="pipe-desc">Human gate &mdash; engineering judgment on generated code</div>
+                    <div class="pipe-badge human-badge">Human Gate</div>
+                </div>
+                <div class="pipeline-step" style="flex:1; text-align:center; position:relative; padding:0 8px;">
+                    <div class="pipe-icon ai" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;position:relative;z-index:1;border:3px solid var(--card-bg);background:linear-gradient(135deg,var(--rak-dark),var(--rak-red));color:white;">&#x1F9EA;</div>
+                    <div class="pipe-label">Testing</div>
+                    <div class="pipe-desc">AI-generated test suites + CI pipeline validation</div>
+                    <div class="pipe-badge ai-badge">AI-Generated</div>
+                </div>
+                <div class="pipeline-step" style="flex:1; text-align:center; position:relative; padding:0 8px;">
+                    <div class="pipe-icon ai" style="width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;margin:0 auto 10px;position:relative;z-index:1;border:3px solid var(--card-bg);background:linear-gradient(135deg,var(--rak-dark),var(--rak-red));color:white;">&#x1F680;</div>
+                    <div class="pipe-label">Delivery</div>
+                    <div class="pipe-desc">Automated deploy, ADO sync, self-learning loop</div>
+                    <div class="pipe-badge ai-badge">Automated</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid fade-in" style="margin-bottom:0;">
+            <div class="stat-item"><div class="stat-number">47</div><div class="stat-label">Figma Screens Designed</div></div>
+            <div class="stat-item"><div class="stat-number">6</div><div class="stat-label">AI Agents in Pipeline</div></div>
+            <div class="stat-item"><div class="stat-number">&lt;1.5h</div><div class="stat-label">Story Turnaround (E2E)</div></div>
+            <div class="stat-item"><div class="stat-number">50&rarr;85%</div><div class="stat-label">Code Accuracy Sprint 1&rarr;4</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================== -->
+<!--  5. AUTONOMOUS SDLC                                      -->
+<!-- ====================================================== -->
+<section class="agentic-section" id="sdlc">
+    <div class="container">
+        <div class="section-header">
+            <div class="section-num">4</div>
+            <div class="overline">Autonomous SDLC</div>
+            <h2>How Our AI Agents Work</h2>
+            <p>Six purpose-built agents fire automatically at trigger points. One human gate preserves engineering judgment.</p>
+        </div>
+
+        <!-- Agent Cards -->
+        <div class="agents-grid">
+            <div class="agent-card fade-in">
+                <div class="agent-header">
+                    <div class="agent-num">01</div>
+                    <div><div class="agent-name">Story Analyzer</div><div class="agent-trigger">You paste story ID in Copilot Chat</div></div>
+                </div>
+                <p class="agent-desc">Reads ADO story &amp; acceptance criteria, pulls solution-design docs, classifies service, personas, state transitions, API contract, and test cases. Creates a structured GitHub Issue.</p>
+                <div class="agent-tags"><span class="tag">ADO MCP</span><span class="tag">GitHub MCP</span><span class="tag">~3&ndash;5 min</span></div>
+            </div>
+            <div class="agent-card fade-in">
+                <div class="agent-header">
+                    <div class="agent-num">02</div>
+                    <div><div class="agent-name">Coding Agent</div><div class="agent-trigger">Triggered by ai-generated label</div></div>
+                </div>
+                <p class="agent-desc">Checks out release branch, creates feature branch, generates full implementation: Flyway migrations, JPA entities, service + state machine, controller, OpenAPI, and test suites. Raises a Draft PR.</p>
+                <div class="agent-tags"><span class="tag">Full stack</span><span class="tag">Copilot Workspace</span><span class="tag">~10&ndash;15 min</span></div>
+            </div>
+            <div class="agent-card fade-in">
+                <div class="agent-header">
+                    <div class="agent-num">03</div>
+                    <div><div class="agent-name">AI Code Review</div><div class="agent-trigger">Triggered by PR opened</div></div>
+                </div>
+                <p class="agent-desc">Reviews diff against curated instructions. Posts inline comments: BigDecimal violations, missing AC tests, persona gaps, missing timeouts &mdash; before a human opens the PR.</p>
+                <div class="agent-tags"><span class="tag">GitHub Actions</span><span class="tag">Inline comments</span><span class="tag">~3&ndash;5 min</span></div>
+            </div>
+            <div class="agent-card human-gate fade-in">
+                <div class="agent-header">
+                    <div class="agent-num">&#x1F9D1;</div>
+                    <div><div class="agent-name">Human Gate</div><div class="agent-trigger">Your engineering judgment</div></div>
+                </div>
+                <p class="agent-desc">Review generated code for business logic, address AI review comments, run tests locally, approve &amp; merge. The only place human judgment is required.</p>
+                <div class="agent-tags"><span class="tag">Business logic check</span><span class="tag">~20 min</span></div>
+            </div>
+            <div class="agent-card fade-in">
+                <div class="agent-header">
+                    <div class="agent-num">05</div>
+                    <div><div class="agent-name">Learning Agent</div><div class="agent-trigger">Triggered by PR merge</div></div>
+                </div>
+                <p class="agent-desc">Extracts coding patterns from approved PRs, scores confidence, promotes to .copilot/skills/ when confidence &ge; 85%. The system gets smarter every sprint.</p>
+                <div class="agent-tags"><span class="tag">Self-learning</span><span class="tag">GitHub Models API</span><span class="tag">~2&ndash;3 min</span></div>
+            </div>
+            <div class="agent-card fade-in">
+                <div class="agent-header">
+                    <div class="agent-num">06</div>
+                    <div><div class="agent-name">ADO Sync</div><div class="agent-trigger">Triggered by push to main</div></div>
+                </div>
+                <p class="agent-desc">Extracts ADO story ID from commit, moves story to Done, links production commit. PO sees story close automatically with full traceability.</p>
+                <div class="agent-tags"><span class="tag">ADO REST API</span><span class="tag">Auto-close</span><span class="tag">~1 min</span></div>
+            </div>
+        </div>
+
+        <!-- Who Does What & How Long -->
+        <div class="time-table-wrap fade-in">
+            <h4>&#x1F4CA; Who Does What &amp; How Long</h4>
+            <p class="table-subtitle">End-to-end per story &mdash; from BRD to production. Includes every role across the lifecycle.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Actor</th>
+                        <th>Time</th>
+                        <th>How AI Is Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Story creation in ADO</td>
+                        <td><span class="role-badge biz">Business / PO</span></td>
+                        <td>&mdash;</td>
+                        <td>Already done before dev starts</td>
+                    </tr>
+                    <tr>
+                        <td>BRD analysis &amp; journey mapping</td>
+                        <td><span class="role-badge arch">Architect</span> + <span class="role-badge dev">Developer</span> + <span class="role-badge ai">AI</span></td></td>
+                        <td>2&ndash;3 hrs</td>
+                        <td>AI extracts personas, business rules, and regulatory requirements from BRD</td>
+                    </tr>
+                    <tr>
+                        <td>Solution design &amp; architecture</td>
+                        <td><span class="role-badge arch">Architect</span> + <span class="role-badge ai">AI</span></td>
+                        <td>3&ndash;4 hrs</td>
+                        <td>AI-assisted architecture diagrams, API contracts, and state machine design</td>
+                    </tr>
+                    <tr>
+                        <td>Figma screen generation</td>
+                        <td><span class="role-badge dev">Developer</span> + <span class="role-badge ai">AI</span></td>
+                        <td>4&ndash;6 hrs</td>
+                        <td>47 screens generated via Copilot + Figma MCP from journey maps</td>
+                    </tr>
+                    <tr class="row-human">
+                        <td>Design review &amp; remediation</td>
+                        <td><span class="role-badge arch">UX</span> + <span class="role-badge biz">Business</span></td>
+                        <td>2&ndash;3 hrs</td>
+                        <td>Human review for UX, compliance, brand &mdash; AI remediates feedback</td>
+                    </tr>
+                    <tr>
+                        <td>Release branch cut</td>
+                        <td><span class="role-badge dev">DevOps</span></td>
+                        <td>&mdash;</td>
+                        <td>Standard workflow</td>
+                    </tr>
+                    <tr>
+                        <td>Run Story Analyzer</td>
+                        <td><span class="role-badge dev">Developer</span></td>
+                        <td>2 min</td>
+                        <td>1 prompt in Copilot Chat &mdash; Agent 1 runs automatically</td>
+                    </tr>
+                    <tr>
+                        <td>GitHub Issue created</td>
+                        <td><span class="role-badge ai">Agent 1</span></td>
+                        <td>3&ndash;5 min</td>
+                        <td>Full spec: personas, state machine, API contract, test cases</td>
+                    </tr>
+                    <tr>
+                        <td>Code generation</td>
+                        <td><span class="role-badge ai">Agent 2</span></td>
+                        <td>10&ndash;15 min</td>
+                        <td>Full stack: entity, service, controller, OpenAPI, test suites</td>
+                    </tr>
+                    <tr>
+                        <td>AI code review</td>
+                        <td><span class="role-badge ai">Agent 3</span></td>
+                        <td>3&ndash;5 min</td>
+                        <td>Inline comments: violations, missing tests, gaps &mdash; before human review</td>
+                    </tr>
+                    <tr>
+                        <td>CI pipeline</td>
+                        <td><span class="role-badge existing">Existing</span></td>
+                        <td>5&ndash;10 min</td>
+                        <td>Maven build, SonarCloud, deploy to DEV &mdash; unchanged</td>
+                    </tr>
+                    <tr class="row-human">
+                        <td>&#x2B50; Human gate &mdash; review &amp; approve</td>
+                        <td><span class="role-badge dev">Developer</span></td>
+                        <td>20&ndash;40 min</td>
+                        <td>Engineering judgment on business logic &mdash; drops to ~15 min by Sprint 4+</td>
+                    </tr>
+                    <tr>
+                        <td>Learning agent</td>
+                        <td><span class="role-badge ai">Agent 5</span></td>
+                        <td>2&ndash;3 min</td>
+                        <td>Extracts patterns, builds .copilot/skills/ over time</td>
+                    </tr>
+                    <tr>
+                        <td>SIT / UAT / Prod</td>
+                        <td><span class="role-badge existing">Existing</span> + <span class="role-badge biz">Business</span></td>
+                        <td>Per process</td>
+                        <td>Existing release pipeline &mdash; unchanged</td>
+                    </tr>
+                    <tr>
+                        <td>ADO story &rarr; Done</td>
+                        <td><span class="role-badge ai">Agent 6</span></td>
+                        <td>1 min</td>
+                        <td>Auto-close with production commit linked &mdash; PO sees evidence</td>
+                    </tr>
+                    <tr class="row-total">
+                        <td colspan="2">Developer active time per story (coding phase)</td>
+                        <td>~25&ndash;45 min</td>
+                        <td>vs. 1&ndash;2 days of manual coding today</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- How the Agent Gets Smarter -->
+        <div class="learning-story fade-in">
+            <h4>&#x1F9E0; How the Agent Gets Smarter</h4>
+            <p class="story-subtitle">Every merged PR feeds the Learning Agent. Confidence builds across stories until the Coding Agent generates code that looks like your team wrote it.</p>
+            <div class="story-steps">
+                <div class="story-step" style="background:linear-gradient(135deg, #EBF5FB 0%, #F8FBFF 100%);">
+                    <div class="story-range">Story 1&ndash;2</div>
+                    <div class="story-conf">50&ndash;55%</div>
+                    <div class="story-desc">Instincts created &mdash; agent learning your codebase patterns &amp; conventions</div>
+                </div>
+                <div class="story-step" style="background:linear-gradient(135deg, #EBF5FB 0%, #F0F8FF 100%);">
+                    <div class="story-range">Story 3&ndash;4</div>
+                    <div class="story-conf">60&ndash;65%</div>
+                    <div class="story-desc">Instincts reinforced &mdash; first patterns promoted to .copilot/skills/</div>
+                </div>
+                <div class="story-step" style="background:linear-gradient(135deg, #E6F5EC 0%, #F3FAF5 100%);">
+                    <div class="story-range">Story 5&ndash;8</div>
+                    <div class="story-conf">70&ndash;75%</div>
+                    <div class="story-desc">Skills active in coding agent &mdash; accuracy improving noticeably</div>
+                </div>
+                <div class="story-step" style="background:linear-gradient(135deg, #E6F5EC 0%, #EDFAF0 100%);">
+                    <div class="story-range">Story 10+</div>
+                    <div class="story-conf">80&ndash;85%</div>
+                    <div class="story-desc">Agent generates code that matches your team&rsquo;s style &mdash; review drops to ~15 min</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Curve Bars -->
+        <div class="learning-track fade-in">
+            <h4>&#x1F4C8; Accuracy Progression &mdash; Sprint Over Sprint</h4>
+            <div class="sprint-row">
+                <div class="sprint-label">Sprint 1</div>
+                <div class="sprint-bar-wrap"><div class="sprint-bar" data-width="55" style="width:0%;">50&ndash;55%</div></div>
+            </div>
+            <div class="sprint-row">
+                <div class="sprint-label">Sprint 2</div>
+                <div class="sprint-bar-wrap"><div class="sprint-bar" data-width="65" style="width:0%;">60&ndash;65%</div></div>
+            </div>
+            <div class="sprint-row">
+                <div class="sprint-label">Sprint 3</div>
+                <div class="sprint-bar-wrap"><div class="sprint-bar" data-width="75" style="width:0%;">70&ndash;75%</div></div>
+            </div>
+            <div class="sprint-row">
+                <div class="sprint-label">Sprint 4+</div>
+                <div class="sprint-bar-wrap"><div class="sprint-bar" data-width="85" style="width:0%;">80&ndash;85%</div></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <strong>RAKBANK</strong> &mdash; Mortgage IPA Digital Transformation &nbsp;|&nbsp; Architecture &amp; Engineering &nbsp;|&nbsp; February 2026
+</footer>
+
+<!-- SCRIPTS -->
+<script>
+    function scrollToSec(sel) { document.querySelector(sel).scrollIntoView({ behavior: 'smooth' }); }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                entry.target.querySelectorAll('.sprint-bar').forEach(bar => {
+                    const w = bar.getAttribute('data-width');
+                    if (w) setTimeout(() => { bar.style.width = w + '%'; }, 300);
+                });
+            }
+        });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    const sections = ['#hero','#problem','#solution','#plan','#sdlc'];
+    const dots = document.querySelectorAll('.nav-dot');
+    window.addEventListener('scroll', () => {
+        let current = 0;
+        sections.forEach((s, i) => { const el = document.querySelector(s); if (el && el.getBoundingClientRect().top <= 200) current = i; });
+        dots.forEach((d, i) => d.classList.toggle('active', i === current));
+    });
+</script>
+</body>
+</html>
